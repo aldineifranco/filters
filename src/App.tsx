@@ -13,8 +13,40 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "./components/ui/sidebar"
+import { useEffect, useState } from "react";
+
+type Person = {
+  id: string;
+  name: string;
+}
 
 export default function App() {
+
+  const API_URL = "http://localhost:5077/person";
+
+  const [data, setData] = useState<Person[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetch(API_URL)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Erro ao buscar os dados");
+        }
+        return response.json();;
+      })
+      .then((data) => {
+        console.log("Dados recebidos:", data); // Para depuração
+        setData(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setError(error.message);
+        setLoading(false);
+      });
+  }, []);
+
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -38,7 +70,17 @@ export default function App() {
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4">
           <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div className="aspect-video rounded-xl bg-muted/50" />
+            <div className="aspect-video rounded-xl bg-muted/50">
+              {loading && <p>Carregando...</p>}
+              {error && <p className="text-red-500">{error}</p>}
+              {!loading && !error && (
+                <ul>
+                  {data.map((person) => (
+                    <li key={person.id}>{person.name}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
             <div className="aspect-video rounded-xl bg-muted/50" />
             <div className="aspect-video rounded-xl bg-muted/50" />
           </div>
