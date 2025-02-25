@@ -13,7 +13,8 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "./components/ui/sidebar"
-import { useEffect, useState } from "react";
+import { useFetchUsuarios } from "./hooks/use-fetch-usuarios";
+
 
 type Person = {
   id: string;
@@ -22,30 +23,7 @@ type Person = {
 
 export default function App() {
 
-  const API_URL = "http://localhost:5077/person";
-
-  const [data, setData] = useState<Person[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    fetch(API_URL)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Erro ao buscar os dados");
-        }
-        return response.json();;
-      })
-      .then((data) => {
-        console.log("Dados recebidos:", data); // Para depuração
-        setData(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setError(error.message);
-        setLoading(false);
-      });
-  }, []);
+  const { data, loading, error } = useFetchUsuarios();
 
   return (
     <SidebarProvider>

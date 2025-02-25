@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 const API_URL = "http://localhost:5077/api/usuarios";
 
-export function useFetchUsurios() {
+export function useFetchUsuarios() {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
